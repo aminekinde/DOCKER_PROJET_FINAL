@@ -16,6 +16,7 @@ export const fetchPlayers = async () => {
 
 // Ajouter un joueur
 export const addPlayer = async (player) => {
+    console.log("sent data : ",player);
     try {
       const response = await fetch('http://127.0.0.1:8000/myapp/players/add/', {
         method: 'POST',
@@ -23,7 +24,7 @@ export const addPlayer = async (player) => {
         body: JSON.stringify(player),
       });
       if (!response.ok) {
-        throw new Error('Erreur lors de l’ajout du joueur');
+        throw new Error('Pb to send data');
       }
       return await response.json();
     } catch (error) {

@@ -18,16 +18,24 @@ def get_players(request):
 def add_player(request):
     if request.method == 'POST':
         try:
+            print("Données brutes reçues:", request.body)
             data = json.loads(request.body)
-            print("Données reçues:", data)  # Debugging
+            print("Données décodées JSON:", data)  # Debugging
+            # id = data.get('id')  
             name = data.get('name') 
             club = data.get('club') 
-            birth_year = int(data.get('birth_year')) if data.get('birth_year') else None
+            try:
+                birth_year = int(data.get('birth_year')) if data.get('birth_year') else None
+            except ValueError:
+                return JsonResponse({'error': 'birth_year doit être un entier'}, status=400)
 
+            print("Valeurs extraites:", {"name": name, "club": club, "birth_year": birth_year})
+            
             if not name or not club or not birth_year:
                 return JsonResponse({'error': 'Tous les champs sont requis'}, status=400)
 
             player = TbPlayers.objects.create(
+                # id=id,
                 name=name,
                 club=club,
                 birth_year=birth_year

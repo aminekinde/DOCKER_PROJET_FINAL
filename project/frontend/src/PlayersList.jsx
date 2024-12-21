@@ -138,8 +138,6 @@ const PlayersList = () => {
 />
 
 
-
-
           <Button variant="contained" color="primary" onClick={handleAddPlayer}>
             Ajouter
           </Button>
