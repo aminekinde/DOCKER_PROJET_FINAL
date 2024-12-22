@@ -1,0 +1,43 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: db-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: DB_ESIEA
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - mynetwork
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend-container
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - DJANGO_SECRET_KEY=django-insecure-2**#4kwxg%y_6z0(5sm3*mcvmzy0gzg-e#6r_39o#&6n^n0w+!
+      - DJANGO_DEBUG=True
+      - DJANGO_ALLOWED_HOSTS=localhost
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=DB_ESIEA
+      - DB_USER=root
+      - DB_PASSWORD=root
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+
+volumes:
+  db_data:
