@@ -1,4 +1,5 @@
-const API_URL = 'http://127.0.0.1:8000/myapp/players';
+const API_URL = 'http://localhost:8000/myapp/players';
+
 
 // Récupérer tous les joueurs
 export const fetchPlayers = async () => {
@@ -18,7 +19,7 @@ export const fetchPlayers = async () => {
 export const addPlayer = async (player) => {
     console.log("sent data : ",player);
     try {
-      const response = await fetch('http://127.0.0.1:8000/myapp/players/add/', {
+      const response = await fetch('http://localhost:8000/myapp/players/add/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(player),
@@ -36,7 +37,7 @@ export const addPlayer = async (player) => {
 // Modifier un joueur
 export const updatePlayer = async (playerId, updatedPlayer) => {
   try {
-    const response = await fetch(`http://127.0.0.1:8000/myapp/players/${playerId}/update/`, {
+    const response = await fetch(`http://localhost:8000/myapp/players/${playerId}/update/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ export const updatePlayer = async (playerId, updatedPlayer) => {
 // Supprimer un joueur
 export const deletePlayer = async (playerId) => {
   try {
-    const response = await fetch(`http://127.0.0.1:8000/myapp/players/${playerId}/delete/`, {
+    const response = await fetch(`http://localhost:8000/myapp/players/${playerId}/delete/`, {
       method: 'DELETE',
     });
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import PlayersList from './PlayersList';
-import {Box } from '@mui/material';
 
 
 function App() {

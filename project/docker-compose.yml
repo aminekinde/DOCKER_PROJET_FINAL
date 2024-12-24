@@ -1,43 +1,53 @@
+version: '3.8'
+
 services:
   db:
-    image: mysql:8.0
+    build:
+      context: ./database
     container_name: db-container
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: DB_ESIEA
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: db_esiea
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
-      - db_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     networks:
-      - mynetwork
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -u test -ptest -e 'SELECT 1;'"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
 
   backend:
     build:
       context: ./backend
     container_name: backend-container
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
-    environment:
-      - DJANGO_SECRET_KEY=django-insecure-2**#4kwxg%y_6z0(5sm3*mcvmzy0gzg-e#6r_39o#&6n^n0w+!
-      - DJANGO_DEBUG=True
-      - DJANGO_ALLOWED_HOSTS=localhost
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_NAME=DB_ESIEA
-      - DB_USER=root
-      - DB_PASSWORD=root
-    depends_on:
-      - db
     networks:
-      - mynetwork
+      - app-network
+    command: sh -c "python myproject/manage.py migrate && python myproject/manage.py runserver 0.0.0.0:8000"
 
-networks:
-  mynetwork:
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend-container
+    ports:
+      - "3001:3000"
+    networks:
+      - app-network
 
 volumes:
-  db_data:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-2**#4kwxg%y_6z0(5sm3*mcvmzy0gzg-e#6r_39o#&6n^n0w+!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+# hostnames autorisés à être rentrés dans le navigateur pour accéder à l'application
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'backend-container'] 
 
 # Application definition
 
@@ -53,9 +53,11 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-# Permettre les requêtes venant du server React
+# Hosts autorisés à envoyer des requêtes à l'API
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:3000",  
+    "http://localhost:3001", 
+    "http://frontend-container:3001", 
 ]
 
 
@@ -87,12 +89,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db_esiea',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'USER': 'test',
+        'PASSWORD': 'test',
+        'HOST': 'db',  # nom du service base de donné entré dans docker-compose.yml
         'PORT': '3306',
     }
 }
+
+
 
 
 # Password validation

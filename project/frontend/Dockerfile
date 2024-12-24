@@ -10,6 +10,9 @@ COPY package*.json /app/
 # Installe les dépendances de l'application React
 RUN npm install
 
+# Installe curl pour les tests de connectivité au backend
+RUN apt-get update && apt-get install -y curl
+
 # Copie le code source dans le conteneur
 COPY . /app/
 
