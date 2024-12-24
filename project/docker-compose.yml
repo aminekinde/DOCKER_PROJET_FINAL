@@ -5,22 +5,26 @@ services:
     build:
       context: ./database
     container_name: db-container
+    env_file:
+      - ./backend/myproject/myproject/.env  # Chemin vers le fichier .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: db_esiea
-      MYSQL_USER: test
-      MYSQL_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: $${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: $${DB_NAME}
+      MYSQL_USER: $${DB_USER}
+      MYSQL_PASSWORD: $${DB_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql # Volume pour persister les données de la bdd
+
+
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "mysql -u test -ptest -e 'SELECT 1;'"]
+      test: ["CMD-SHELL", "mysql -u $${DB_USER} -p$${DB_PASSWORD} -e 'SELECT 1;'"]
       interval: 10s
       retries: 5
-      start_period: 30s
+      start_period: 60s
       timeout: 5s
 
   backend:
