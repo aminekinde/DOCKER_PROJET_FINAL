@@ -1,0 +1,2 @@
+# Ignorer le fichier .env contenant les variables d'environnement sécurisées pour ne pas le versionner
+.env
