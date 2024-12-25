@@ -1,58 +1,55 @@
-version: '3.8'
-
 services:
   db:
     build:
       context: ./database
     container_name: db-container
     env_file:
-      - ./backend/myproject/myproject/.env  # Chemin vers le fichier .env
-    environment:
-      MYSQL_ROOT_PASSWORD: $${DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: $${DB_NAME}
-      MYSQL_USER: $${DB_USER}
-      MYSQL_PASSWORD: $${DB_PASSWORD}
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql # Volume pour persister les données de la bdd
-
-
-    networks:
-      - app-network
+      - .docker-env  # fichier de sécurité contenant les variables d'environnement sensibles
     healthcheck:
-      test: ["CMD-SHELL", "mysql -u $${DB_USER} -p$${DB_PASSWORD} -e 'SELECT 1;'"]
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost" ]
       interval: 10s
       retries: 5
-      start_period: 60s
+      start_period: 30s
       timeout: 5s
+    ports:
+      - 3307:3306 # exposition du service sur le port 3307 de la machine hôte car son port 3306 pourrait déjà être utilisé
+    volumes:
+      - mysql_volume:/var/lib/mysql
+    networks:
+      - app-network
 
   backend:
     build:
       context: ./backend
     container_name: backend-container
+    healthcheck:
+      test: ["CMD-SHELL", "cat /proc/1/cmdline | grep -a python"] # Voir si le processus python est en cours d'exécution (si le python manage.py runserver a fonctionné)
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 5s
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - "8000:8000"
+      - 8001:8000 #exposition du service sur le port 8001 de la machine hôte car son port 8000 pourrait déjà être utilisé
     networks:
       - app-network
-    command: sh -c "python myproject/manage.py migrate && python myproject/manage.py runserver 0.0.0.0:8000"
-    env_file:
-      - ./backend/myproject/myproject/.env  # Chemin vers le fichier .env
 
   frontend:
     build:
       context: ./frontend
     container_name: frontend-container
+    depends_on:
+      backend:
+        condition: service_healthy
     ports:
-      - "3001:3000"
+      - 3001:3000 # exposition du service sur le port 3001 de la machine hôte car son port 3000 pourrait déjà être utilisé
     networks:
       - app-network
 
 volumes:
-  mysql_data:
+  mysql_volume:
 
 networks:
   app-network:

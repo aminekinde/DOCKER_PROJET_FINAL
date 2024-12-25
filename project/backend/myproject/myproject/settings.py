@@ -94,7 +94,7 @@ DATABASES = {
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST'),  # nom du service base de donné entré dans docker-compose.yml
-        'PORT': config('DB_PORT', default='3306'),
+        'PORT': config('DB_PORT'),
     }
 }
 

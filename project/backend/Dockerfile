@@ -23,5 +23,9 @@ COPY . .
 # Lister les fichiers pour vérifier la présence de manage.py
 RUN ls -la /app/myproject
 
-# Exécuter les migrations et démarrer le serveur Django
-CMD ["sh", "-c", "python myproject/manage.py migrate && python myproject/manage.py runserver 0.0.0.0:8000"]
+# Démarrer le serveur Django
+CMD ["sh", "-c", "python myproject/manage.py runserver 0.0.0.0:8000"]
+
+# CMD ["sh", "-c", "python myproject/manage.py makemigrations && python myproject/manage.py migrate && python myproject/manage.py runserver 0.0.0.0:8000"]
+# Au cas où je gère mes tables depuis Django et donc qu'il me faille mettre manage = True pour les tables que je veux gérer 
+# et ensuite appliquer les migrations.
